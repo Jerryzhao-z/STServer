@@ -1,0 +1,8 @@
+{
+  "name": "SleepTight",
+  "description": "Application SleepTight",
+  "image": "heroku/python",
+  "repository": "https://SleepTight_tc@bitbuckete.org/SleepTight_tc/sleeptight_server_flask.git",
+  "keywords": ["python", "flask" ],
+  "addons": [ "heroku-postgresql" ]
+}
