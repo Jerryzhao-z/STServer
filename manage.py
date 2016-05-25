@@ -13,21 +13,21 @@ if os.path.exists('.env'):
         if len(var) == 2:
             os.environ[var[0]] = var[1]
 
-from app import create_app
-#, db
-#from app.models import User, Follow, Role, Permission, Post, Comment
+from app import create_app, db
 from flask.ext.script import Manager, Shell
 # from flask.ext.migrate import Migrate, MigrateCommand
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+
 manager = Manager(app)
+
 # migrate = Migrate(app, db)
+from app.models import User, Voice, Parameter, Parameters, Evenement, HeartRate, SleepData
 
 
-# def make_shell_context():
-#     return dict(app=app, db=db, User=User, Follow=Follow, Role=Role,
-#                 Permission=Permission, Post=Post, Comment=Comment)
-# manager.add_command("shell", Shell(make_context=make_shell_context))
+def make_shell_context():
+	return dict(app=app, db=db, User=User, Voice=Voice, Parameter=Parameter, Parameters=Parameters, Evenement=Evenement, HeartRate=HeartRate, SleepData= SleepData)
+manager.add_command("shell", Shell(make_context=make_shell_context))
 # manager.add_command('db', MigrateCommand)
 
 # Userd fot Test

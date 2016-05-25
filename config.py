@@ -7,6 +7,9 @@ class Config:
     # SSL_DISABLE = False
     # SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     # SQLALCHEMY_RECORD_QUERIES = True
+
+    #configuration for Mongodb
+    MONGODB_SETTINGS = {'DB' : "SleepTight_db"}
     # MAIL_SERVER = 'smtp.googlemail.com'
     # MAIL_PORT = 587
     # MAIL_USE_TLS = True
