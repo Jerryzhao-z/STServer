@@ -1,5 +1,9 @@
 from . import db
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask import current_app, request, url_for
 import datetime
+import hashlib
 #TODO !
 #Pour l'instant, on a seulement defini un type primaire pour les parametres
 #le probleme c'est pour l'instant on ne sait pas qu'il sont les parametre necessaire.
@@ -42,8 +46,8 @@ class Voice(db.Document):
 # Personal_Parameters : les parameters calcule pour deduire le temps de repo
 # Friends : les amis
 class User(db.Document):
-	name = db.StringField(required = True)
-	email = db.EmailField(required = True)
+	username = db.StringField(required = True, unique=True)
+	email = db.EmailField()
 	password_hash = db.StringField(required = True)
 	token = db.StringField()
 	Evenements = db.ListField(db.EmbeddedDocumentField('Evenement'))
@@ -51,3 +55,60 @@ class User(db.Document):
 	Friends = db.ListField(db.ReferenceField('User'))
 	VoiceSent = db.ListField(db.ReferenceField('Voice'))
 	Voicereceived = db.ListField(db.ReferenceField('Voice'))
+
+	# @property
+	# def password(self):
+	# 	return self.password_hash
+		#raise AttributeError('password is not a readable attribute')
+
+	def set_up_password(self, password):
+		self.password_hash = generate_password_hash(password)
+
+	def verify_password(self, password):
+		return check_password_hash(self.password_hash, password)
+
+	def generate_confirmation_token(self, expiration=3600):
+		s = Serializer(current_app.config['SECRET_KEY'], expiration)
+		return s.dumps({'confirm': self.id})
+
+	def confirm(self, token):
+		s = Serializer(current_app.config['SECRET_KEY'])
+		try:
+			data = s.loads(token)
+		except:
+			return False
+		if data.get('confirm') != self.id:
+			return False
+		self.confirmed = True
+		db.session.add(self)
+		return True
+
+	def generate_reset_token(self, expiration=3600):
+		s = Serializer(current_app.config['SECRET_KEY'], expiration)
+		return s.dumps({'reset': self.id})
+
+	def reset_password(self, token, new_password):
+		s = Serializer(current_app.config['SECRET_KEY'])
+		try:
+			data = s.loads(token)
+		except:
+			return False
+		if data.get('reset') != self.id:
+			return False
+		self.password = new_password
+		db.session.add(self)
+		return True
+
+	def generate_auth_token(self, expiration):
+		s = Serializer(current_app.config['SECRET_KEY'],
+							expires_in=expiration)
+		return s.dumps({'id': self.id}).decode('ascii')
+
+	@staticmethod
+	def verify_auth_token(token):
+		s = Serializer(current_app.config['SECRET_KEY'])
+		try:
+			data = s.loads(token)
+		except:
+			return None
+		return User.query.get(data['id'])
