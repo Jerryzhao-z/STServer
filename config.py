@@ -9,7 +9,8 @@ class Config:
     # SQLALCHEMY_RECORD_QUERIES = True
 
     #configuration for Mongodb
-    MONGODB_SETTINGS = {'db' : "SleepTight_db", 'host': "mongodb://commun:cats@ds021343.mlab.com:21343/heroku_rl0lqmpz"}
+    MONGODB_SETTINGS = {'db' : "SleepTight_db"}
+    #MONGODB_SETTINGS = {'db' : "SleepTight_db", 'host': "mongodb://commun:cats@ds021343.mlab.com:21343/heroku_rl0lqmpz"}
     # MAIL_SERVER = 'smtp.googlemail.com'
     # MAIL_PORT = 587
     # MAIL_USE_TLS = True
