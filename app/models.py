@@ -55,7 +55,11 @@ class User(db.Document):
 	Friends = db.ListField(db.ReferenceField('User'))
 	VoiceSent = db.ListField(db.ReferenceField('Voice'))
 	Voicereceived = db.ListField(db.ReferenceField('Voice'))
-
+	fitbit_callback_code = db.StringField()
+	fitbit_access_token = db.StringField()
+	fitbit_user_id = db.StringField()
+	fitbit_token_type = db.StringField()
+	fitbit_refresh_token = db.StringField()
 	# @property
 	# def password(self):
 	# 	return self.password_hash

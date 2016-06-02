@@ -7,11 +7,11 @@ try:
 	import cPickle as pickle 
 except ImportError:
 	import pickle
-
+import requests, json
 # 25/5/2016 11:48
 #get id
 # curl -u <username>:<password> -i -X GET -H "Content-Type: application/json" http://sleeptight2016.herokuapp.com/api/v1.0/users/<id>
-@api.route('/users/<id>')
+@api.route('/users/<id>/')
 @auth.login_required
 def get_user(id):
 	id = ObjectId(id)
@@ -45,7 +45,7 @@ def new_user():
 
 # delete account
 # curl -u <username>:<password> -i -X get -H "Content-Type: application/json" http://sleeptight2016.herokuapp.com/api/v1.0/users/delete/<id>
-@api.route('/users/delete/<id>')
+@api.route('/users/delete/<id>/')
 @auth.login_required
 def delete_user(id):
 	if User.objects(id=ObjectId(id)).first() is None:
@@ -62,17 +62,53 @@ def delete_user(id):
 #gestion de token
 
 #fitbit
-#redirect the user to Fitbit OAuth 2.0
-@api.route('/users/fitbit/permission/')
+@api.route('/users/fitbit/auth/')
 @auth.login_required
-def get_permission_fitbit():
-	client_id = "227MTX"
+def request_fibit_auth():
+	head_url = "https://www.fitbit.com/oauth2/authorize?"
 	response_type = "code"
-	scope = "heartrate%20sleep%20location"
-	redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2F"
-	expires_in = "604800" # 1 week
+	client_id = "227MTX"
+	redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fusers%2Ffitbit%2Fcallback%2F"
+	#redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2F"
+	scope = "heartrate%20location%20sleep"
+	expires_in = "2592000" # 1 month
 	state = str(g.current_user.id)
-	return redirect("https://www.fitbit.com/oauth2/authorize?response_type="+response_type+"&client_id="+client_id+"&redirect_uri="+redirect_uri+"&scope="+scope+"&expires_in="+expires_in+"&state="+state)
+	return redirect(head_url+"response_type="+response_type+"&client_id="+client_id+"&redirect_uri="+redirect_uri+"&scope="+scope+"&expires_in="+expires_in+"&state="+state)
 
-	
+
+@api.route('/users/fitbit/callback/')
+def callback_fitbit_auth():
+	state_id = request.args.get("state")
+	user = User.objects(id=ObjectId(state_id)).first() 
+	code = request.args.get("code")
+	user.update(fitbit_callback_code = code)
+	#return jsonify({'code': user.fitbit_callback_code}), 200
+	request_body = "clientId=22zMTX&grant_type=authorization_code&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fusers%2Ffitbit%2Fcallback%2F&code="+code
+	#request_body = "clientId=22zMTX&grant_type=authorization_code&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2F&code="+code
+	request_headers = {'Authorization':'Basic MjI3TVRYOmZhMjM1ZThhMWJlOTA2MTQ0MjYzMjlmMWM2YjE5OTZk', 'Content-type':'application/x-www-form-urlencoded' }
+	response_curl = requests.post("https://api.fitbit.com/oauth2/token", data=request_body, headers=request_headers)
+	response_dictionary = json.loads(response_curl.text)
+	access_token = response_dictionary["access_token"]
+	user.update(fitbit_access_token=access_token)
+	token_type = response_dictionary["token_type"]
+	user.update(fitbit_token_type=token_type)
+	fitbit_user_id = response_dictionary["user_id"]
+	user.update(fitbit_user_id=fitbit_user_id)
+	fitbit_refresh_token = response_dictionary["refresh_token"]
+	user.update(fitbit_refresh_token=fitbit_refresh_token)	
+	return jsonify({'response_dictionary': response_dictionary, 'token_type':token_type, 'fitbit_user_id':fitbit_user_id}), 200
+
+#def refresh_token()
+
+#def get_access_token()
+#TODO
+@api.route('/users/fitbit/sleeps/')
+@auth.login_required
+def get_sleep_log():
+	# verify is there sleep_log of the day
+	user = g.current_user
+	response_curl = requests.get("url", headers={'Authorization': user.fitbit_token_type+" "+user.fitbit_access_token}) 
+	return response_curl.text
+	#TODO: traitment of data
+	#TODO: return the data to android
 # generation de token fichier: authentification.py
