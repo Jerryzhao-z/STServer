@@ -74,7 +74,5 @@ def get_permission_fitbit():
 	state = str(g.current_user.id)
 	return redirect("https://www.fitbit.com/oauth2/authorize?response_type="+response_type+"&client_id="+client_id+"&redirect_uri="+redirect_uri+"&scope="+scope+"&expires_in="+expires_in+"&state="+state)
 
-@api.route('/users/fitbit/callback')
-def get_authcode():
-#TODO: get state, get auth code
+	
 # generation de token fichier: authentification.py
