@@ -55,7 +55,6 @@ class User(db.Document):
 	Friends = db.ListField(db.ReferenceField('User'))
 	VoiceSent = db.ListField(db.ReferenceField('Voice'))
 	Voicereceived = db.ListField(db.ReferenceField('Voice'))
-	#authen
 	fitbit_callback_code = db.StringField()
 	fitbit_access_token = db.StringField()
 	fitbit_user_id = db.StringField()

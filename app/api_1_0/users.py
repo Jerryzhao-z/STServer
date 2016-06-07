@@ -98,8 +98,8 @@ def callback_fitbit_auth():
 	user.update(fitbit_user_id=fitbit_user_id)
 	fitbit_refresh_token = response_dictionary["refresh_token"]
 	user.update(fitbit_refresh_token=fitbit_refresh_token)	
-	#return jsonify({'response_dictionary': response_dictionary, 'token_type':token_type, 'fitbit_user_id':fitbit_user_id}), 200
-	return redirect("SleepTight://Main:8000/mypath?key=mykey")
+	return jsonify({'state_id': state_id, 'token_type':token_type, 'fitbit_user_id':fitbit_user_id}), 200
+	#return redirect("SleepTight://Main:8000/mypath?key=mykey")
 
 #def refresh_token()
 
