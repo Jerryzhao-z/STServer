@@ -7,7 +7,7 @@ try:
 	import cPickle as pickle 
 except ImportError:
 	import pickle
-import requests, json, base64
+import requests, json, base64, re
 
 client_id = "227TD3"
 client_secret = "47fb319850e594fec1a0aa88de295898"
@@ -81,7 +81,12 @@ def request_fibit_auth():
 @api.route('/users/fitbit/callback/')
 def callback_fitbit_auth():
 	state_id = request.args.get("state")
+	#controle de state_id
+	pattern = re.compile('[1-9a-fA-F]{24}')
+	if pattern.match(state_id) is None:
+		return "illegal state"
 	user = User.objects(id=ObjectId(state_id)).first() 
+	if user is
 	code = request.args.get("code")
 	user.update(fitbit_callback_code = code)
 	#return jsonify({'code': user.fitbit_callback_code}), 200
