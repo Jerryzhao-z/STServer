@@ -75,7 +75,7 @@ def request_fibit_auth():
 	response_type = "code"
 	#redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2F"
 	state = str(g.current_user.id)
-	return redirect(head_url+"response_type="+response_type+"&client_id="+client_id+"&redirect_uri="+redirect_uri+"&scope="+scope+"&expires_in="+expires_in+"&state="+state)
+	return redirect(head_url+"response_type="+response_type+"&client_id="+client_id+"&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Fcallback&scope="+scope+"&expires_in="+expires_in+"&state="+state)
 
 
 @api.route('/users/fitbit/callback/')
