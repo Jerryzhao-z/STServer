@@ -1,7 +1,7 @@
 from flask import jsonify, request, current_app, url_for, abort, g, redirect
 from . import api
 from ..models import User
-from .authentication import auth
+from .authentication import auth, verify_password
 from bson.objectid import ObjectId
 try:
 	import cPickle as pickle 
@@ -20,6 +20,9 @@ redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2
 @api.route('/users/<id>/')
 @auth.login_required
 def get_user(id):
+	pattern = re.compile('[1-9a-fA-F]{24}')
+	if pattern.match(id) is None:
+		return "illegal state"
 	id = ObjectId(id)
 	user = User.objects(id=id).first()
 	if user is None:
@@ -45,9 +48,35 @@ def new_user():
 # login
 # in file authentication.py, test with command: curl -X POST -u "username:password" url_ressource
 # miguelgrinberg restful-authentication-with-flask
+@api.route('/users/login/', methods=['POST'])
+def login_app():
+	username = request.json.get('username')
+	password = request.json.get('password')
+	if username is None or password is None:
+	 	abort(400)#missing arguments
+	if User.objects(username=username).first() is None:
+	 	abort(404)#user doesn't exist
+	if verify_password(username, password) is False:
+		abort(400)#wrong password
+	id = User.objects(username=username).first().id
+	return jsonify({'username': username, 'id': str(id)}), 201	
+
+@api.route('/users/reset', methods=['POST'])
+@auth.login_required
+def profile_resetting():
+	username = request.json.get('username')
+	password = request.json.get('password')
+	user = g.current_user
+	if username is not None:
+		user.update(username = username);
+	if password is not None:
+		user.set_up_password(password);
+	return jsonify({'username': username, 'pw_hash': g.current_user.password_hash}), 201
+
+
 
 # logout
-#we don't need logout, because in API Restful, we don't really create login
+#we don't need logout, because in API Restful, we don't really create logout
 
 # delete account
 # curl -u <username>:<password> -i -X get -H "Content-Type: application/json" http://sleeptight2016.herokuapp.com/api/v1.0/users/delete/<id>

@@ -46,7 +46,7 @@ class Voice(db.Document):
 # Personal_Parameters : les parameters calcule pour deduire le temps de repo
 # Friends : les amis
 class User(db.Document):
-	username = db.StringField(required = True, unique=True)
+	username = db.StringField(required = True)
 	email = db.EmailField()
 	password_hash = db.StringField(required = True)
 	token = db.StringField()
@@ -67,7 +67,7 @@ class User(db.Document):
 		#raise AttributeError('password is not a readable attribute')
 
 	def set_up_password(self, password):
-		self.password_hash = generate_password_hash(password)
+		self.update(password_hash = generate_password_hash(password))
 
 	def verify_password(self, password):
 		return check_password_hash(self.password_hash, password)
