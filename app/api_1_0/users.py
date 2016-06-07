@@ -68,7 +68,7 @@ def request_fibit_auth():
 	head_url = "https://www.fitbit.com/oauth2/authorize?"
 	response_type = "code"
 	client_id = "227TD3"
-	redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Fcallback%2F"
+	redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Fcallback"
 	#redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2F"
 	scope = "heartrate%20location%20sleep"
 	expires_in = "2592000" # 1 month
@@ -85,7 +85,7 @@ def callback_fitbit_auth():
 	#return jsonify({'code': user.fitbit_callback_code}), 200
 	client_id = "227TD3"
 	client_secret = "47fb319850e594fec1a0aa88de295898"
-	request_body = "clientId=22zMTX&grant_type=authorization_code&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Fcallback%2F&code="+code
+	request_body = "clientId=22zMTX&grant_type=authorization_code&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Fcallback&code="+code
 	#request_body = "clientId=22zMTX&grant_type=authorization_code&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2F&code="+code
 	request_headers = {'Authorization':'Basic '+base64.b64encode(client_id+":"+client_secret), 'Content-type':'application/x-www-form-urlencoded' }
 	response_curl = requests.post("https://api.fitbit.com/oauth2/token", data=request_body, headers=request_headers)
