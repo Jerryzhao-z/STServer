@@ -8,6 +8,12 @@ try:
 except ImportError:
 	import pickle
 import requests, json, base64
+
+client_id = "227TD3"
+client_secret = "47fb319850e594fec1a0aa88de295898"
+scope = "heartrate%20location%20sleep"
+expires_in = "2592000" # 1 month
+redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Fcallback"
 # 25/5/2016 11:48
 #get id
 # curl -u <username>:<password> -i -X GET -H "Content-Type: application/json" http://sleeptight2016.herokuapp.com/api/v1.0/users/<id>
@@ -67,11 +73,7 @@ def delete_user(id):
 def request_fibit_auth():
 	head_url = "https://www.fitbit.com/oauth2/authorize?"
 	response_type = "code"
-	client_id = "227TD3"
-	redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Fcallback"
 	#redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2F"
-	scope = "heartrate%20location%20sleep"
-	expires_in = "2592000" # 1 month
 	state = str(g.current_user.id)
 	return redirect(head_url+"response_type="+response_type+"&client_id="+client_id+"&redirect_uri="+redirect_uri+"&scope="+scope+"&expires_in="+expires_in+"&state="+state)
 
@@ -83,9 +85,7 @@ def callback_fitbit_auth():
 	code = request.args.get("code")
 	user.update(fitbit_callback_code = code)
 	#return jsonify({'code': user.fitbit_callback_code}), 200
-	client_id = "227TD3"
-	client_secret = "47fb319850e594fec1a0aa88de295898"
-	request_body = "clientId=22zMTX&grant_type=authorization_code&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Fcallback&code="+code
+	request_body = "clientId="+client_id+"&grant_type=authorization_code&redirect_uri="+redirect_uri+"&code="+code
 	#request_body = "clientId=22zMTX&grant_type=authorization_code&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2F&code="+code
 	request_headers = {'Authorization':'Basic '+base64.b64encode(client_id+":"+client_secret), 'Content-type':'application/x-www-form-urlencoded' }
 	response_curl = requests.post("https://api.fitbit.com/oauth2/token", data=request_body, headers=request_headers)
