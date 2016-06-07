@@ -86,7 +86,6 @@ def callback_fitbit_auth():
 	if pattern.match(state_id) is None:
 		return "illegal state"
 	user = User.objects(id=ObjectId(state_id)).first() 
-	if user is
 	code = request.args.get("code")
 	user.update(fitbit_callback_code = code)
 	#return jsonify({'code': user.fitbit_callback_code}), 200
