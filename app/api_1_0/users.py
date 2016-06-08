@@ -125,8 +125,7 @@ def callback_fitbit_auth():
 	request_headers = {'Authorization':'Basic '+base64.b64encode(client_id+":"+client_secret), 'Content-type':'application/x-www-form-urlencoded' }
 	response_curl = requests.post("https://api.fitbit.com/oauth2/token", data=request_body, headers=request_headers)
 	if response_curl.status_code != 200:
- 		#return jsonify({'state_id': state_id, 'code':code, 'status_code':response_curl.status_code})
- 		return response_curl
+ 		return jsonify({'state_id': state_id, 'code':code, 'status_code':response_curl.status_code, 'text':response_curl.text})
  	#traitemetn de reponse
 	response_dictionary = json.loads(response_curl.text)
 	access_token = response_dictionary["access_token"]
