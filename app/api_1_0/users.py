@@ -165,11 +165,11 @@ def get_sleep_log_test(year, month, day):
 	if user.fitbit_access_token is None:
 		if user.fitbit_refresh_token is None:
 			redirect(url_for('.request_fibit_auth'))
-		fitbit_access_token, fitbit_refresh_token = refresh_token(user.fitbit_refresh_token)
+		fitbit_access_token, fitbit_refresh_token = refreshing_token(user.fitbit_refresh_token)
 		user.set_up_variable(fitbit_access_token=fitbit_access_token)
 		user.set_up_variable(fitbit_refresh_token=fitbit_refresh_token)		
 	url = "https://api.fitbit.com/1/user/4KR62B/sleep/date/{}-{}-{}.json".format(year, month, day) 
-	request_headers = {'Authorization':'Bearer '+access_token}
+	request_headers = {'Authorization':'Bearer '+user.fitbit_access_token}
  	response_curl = requests.get(url, headers=request_headers)
  	if response_curl.status_code != 200:
  		abort(response_curl.status_code)
@@ -178,7 +178,7 @@ def get_sleep_log_test(year, month, day):
 
 
 #refresh_token = ""
-def refresh_token(refresh_token):
+def refreshing_token(refresh_token):
  	request_body = "grant_type=refresh_token&refresh_token="+refresh_token
  	request_headers = {'Authorization':'Basic '+base64.b64encode(client_id+":"+client_secret), 'Content-type':'application/x-www-form-urlencoded' }
  	response_curl = requests.post("https://api.fitbit.com/oauth2/token", data=request_body, headers=request_headers)
