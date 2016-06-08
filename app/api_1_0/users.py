@@ -71,7 +71,7 @@ def profile_resetting():
 	if username is not None:
 		user.update(username = username);
 	if password is not None:
-		user.set_up_password(password);
+		user.reset_up_password(password);
 	return jsonify({'username': username, 'pw_hash': g.current_user.password_hash}), 201
 
 
@@ -119,7 +119,7 @@ def callback_fitbit_auth():
 		return "illegal state"
 	user = User.objects(id=ObjectId(state_id)).first()
 	code = request.args.get("code")
- 	user.update(fitbit_callback_code = code)
+ 	user.set_up_variable(fitbit_callback_code = code)
 	#return jsonify({'code': user.fitbit_callback_code}), 200
 	#request
 	request_body = "client_id="+client_id+"&grant_type=authorization_code&code="+code
@@ -131,13 +131,13 @@ def callback_fitbit_auth():
  	#traitemetn de reponse
 	response_dictionary = json.loads(response_curl.text)
 	access_token = response_dictionary["access_token"]
-	user.update(fitbit_access_token=access_token)
+	user.set_up_variable(fitbit_access_token=access_token)
 	token_type = response_dictionary["token_type"]
-	user.update(fitbit_token_type=token_type)
+	user.set_up_variable(fitbit_token_type=token_type)
 	fitbit_user_id = response_dictionary["user_id"]
-	user.update(fitbit_user_id=fitbit_user_id)
+	user.set_up_variable(fitbit_user_id=fitbit_user_id)
 	fitbit_refresh_token = response_dictionary["refresh_token"]
-	user.update(fitbit_refresh_token=fitbit_refresh_token)	
+	user.set_up_variable(fitbit_refresh_token=fitbit_refresh_token)	
 	return jsonify({'state_id': state_id, 'token_type':token_type, 'fitbit_user_id':fitbit_user_id}), 200
 	#return redirect("SleepTight://Main:8000/mypath?key=mykey")
  	#return redirect(url_for('main.index'))

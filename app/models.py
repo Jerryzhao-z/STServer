@@ -62,12 +62,27 @@ class User(db.Document):
 	fitbit_token_type = db.StringField()
 	fitbit_refresh_token = db.StringField()
 
+
+	def set_up_variable(self, fitbit_callback_code, fitbit_access_token, fitbit_user_id, fitbit_token_type, fitbit_refresh_token):
+		if fitbit_callback_code is not None:
+			self.fitbit_callback_code = fitbit_callback_code
+		if fitbit_access_token is not None:
+			self.fitbit_access_token = fitbit_access_token
+		if fitbit_user_id is not None:
+			self.fitbit_user_id = fitbit_user_id
+		if fitbit_token_type is not None:
+			self.fitbit_token_type = fitbit_token_type	
+		if fitbit_refresh_token is not None:
+			self.fitbit_refresh_token = fitbit_refresh_token		
 	# @property
 	# def password(self):
 	# 	return self.password_hash
 		#raise AttributeError('password is not a readable attribute')
 
 	def set_up_password(self, password):
+		self.password_hash = generate_password_hash(password)
+
+	def reset_up_password(self, password):
 		self.update(password_hash = generate_password_hash(password))
 
 	def verify_password(self, password):
@@ -118,3 +133,5 @@ class User(db.Document):
 		except:
 			return None
 		return User.query.get(data['id'])
+
+
