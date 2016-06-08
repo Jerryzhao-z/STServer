@@ -3,6 +3,7 @@ from . import api
 from ..models import User
 from .authentication import auth, verify_password
 from bson.objectid import ObjectId
+from PIL import Image
 try:
 	import cPickle as pickle 
 except ImportError:
@@ -73,8 +74,31 @@ def profile_resetting():
 		user.set_up_password(password);
 	return jsonify({'username': username, 'pw_hash': g.current_user.password_hash}), 201
 
+@api.route('/users/photo/', methods=['GET','POST'])
+@auth.login_required
+def photo_operation():
+	if request.method == 'POST':
+		photo = request.json.get('photo')
+		photo_name = request.json.get('name')
+		fh = open(photo_name, 'r+b')
+		fh.write(photo.decode('base64'))
+		if g.current_user.photo is None:
+			g.current_user.photo.put(fh, content_type=photo_name)
+			g.current_user.save()
+		else:
+			g.current_user.photo.replace(fh)
+		return jsonify({'username': g.current_user.username}), 201
+	else:
+		if g.current_user.photo is None:
+			abort(404)
+		else:
+			#TODO:PAS ENCORE MARCHER LA PATIE LECTURE
+			user = g.current_user
+			photo = user.photo.read()
+			return jsonify({'photo': base64.b64encode(photo)})
+			#return jsonify({'name':user.photo.content_type})
 
-
+		
 # logout
 #we don't need logout, because in API Restful, we don't really create logout
 
@@ -105,7 +129,6 @@ def request_fibit_auth():
 	#redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2F"
 	state = str(g.current_user.id)
 	return redirect(head_url+"response_type="+response_type+"&client_id="+client_id+"&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Fcallback&scope="+scope+"&expires_in="+expires_in+"&state="+state)
-
 
 @api.route('/users/fitbit/callback/')
 def callback_fitbit_auth():
