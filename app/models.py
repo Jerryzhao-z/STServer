@@ -63,7 +63,7 @@ class User(db.Document):
 	fitbit_refresh_token = db.StringField()
 
 
-	def set_up_variable(self, fitbit_callback_code, fitbit_access_token, fitbit_user_id, fitbit_token_type, fitbit_refresh_token):
+	def set_up_variable(self, fitbit_callback_code=None, fitbit_access_token=None, fitbit_user_id=None, fitbit_token_type=None, fitbit_refresh_token=None):
 		if fitbit_callback_code is not None:
 			self.fitbit_callback_code = fitbit_callback_code
 		if fitbit_access_token is not None:
