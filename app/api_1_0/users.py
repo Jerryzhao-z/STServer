@@ -120,7 +120,7 @@ def callback_fitbit_auth():
  	user.set_up_variable(fitbit_callback_code = code)
 	#return jsonify({'code': user.fitbit_callback_code}), 200
 	#request
-	request_body = "client_id="+client_id+"&grant_type=authorization_code&code="+code
+	request_body = "client_id="+client_id+"&redirect_uri="+redirect_uri+"&grant_type=authorization_code&code="+code
 	#request_body = "clientId=22zMTX&grant_type=authorization_code&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2F&code="+code
 	request_headers = {'Authorization':'Basic '+base64.b64encode(client_id+":"+client_secret), 'Content-type':'application/x-www-form-urlencoded' }
 	response_curl = requests.post("https://api.fitbit.com/oauth2/token", data=request_body, headers=request_headers)
