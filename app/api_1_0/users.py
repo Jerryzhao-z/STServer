@@ -174,8 +174,7 @@ def get_sleep_log_test(year, month, day):
  	if response_curl.status_code != 200:
  		abort(response_curl.status_code)
  	response_dictionary = json.loads(response_curl.text)
- 	return jsonify({'log':response_dictionary})
-
+ 	return traitement_data_sleep(user, response_dictionary)
 
 #refresh_token = ""
 def refreshing_token(refresh_token):
@@ -188,6 +187,12 @@ def refreshing_token(refresh_token):
  	access_token = response_dictionary["access_token"]
  	refresh_token = response_dictionary["refresh_token"]
  	return (access_token, refresh_token)
+
+def traitement_data_sleep(user, response_dictionary):
+	sleep = response_dictionary["sleep"]
+	summary = response_dictionary["summary"]
+	return jsonify({'sleep':sleep, 'summary':summary})
+
 
 @api.route('/test/fitbit/get')
 @auth.login_required
