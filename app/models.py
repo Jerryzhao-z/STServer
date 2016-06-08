@@ -24,6 +24,7 @@ class Evenement(db.EmbeddedDocument):
 	Hear_Rates = db.ListField(db.EmbeddedDocumentField('HeartRate'))
 	Optional_Sleep_Data = db.EmbeddedDocumentField('SleepData')
 
+
 #TODO !
 #a definir selon le api de fitbit
 class HeartRate(db.EmbeddedDocument):
