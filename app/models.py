@@ -65,15 +65,15 @@ class User(db.Document):
 
 	def set_up_variable(self, fitbit_callback_code=None, fitbit_access_token=None, fitbit_user_id=None, fitbit_token_type=None, fitbit_refresh_token=None):
 		if fitbit_callback_code is not None:
-			self.fitbit_callback_code = fitbit_callback_code
+			self.update(fitbit_callback_code = fitbit_callback_code, upsert = True)
 		if fitbit_access_token is not None:
-			self.fitbit_access_token = fitbit_access_token
+			self.update(fitbit_access_token = fitbit_access_token, upsert = True)
 		if fitbit_user_id is not None:
-			self.fitbit_user_id = fitbit_user_id
+			self.update(fitbit_user_id = fitbit_user_id, upsert = True)
 		if fitbit_token_type is not None:
-			self.fitbit_token_type = fitbit_token_type	
+			self.update(fitbit_token_type = fitbit_token_type, upsert = True)	
 		if fitbit_refresh_token is not None:
-			self.fitbit_refresh_token = fitbit_refresh_token		
+			self.update(fitbit_refresh_token = fitbit_refresh_token, upsert = True)		
 	# @property
 	# def password(self):
 	# 	return self.password_hash

@@ -197,3 +197,14 @@ def get_fitbit_data():
 		res = res+ "fitbit_refresh_token: "+user.fitbit_refresh_token
 	return jsonify({'info':res, 'user':user.username})
 
+@api.route('/test/fitbit/insert')
+@auth.login_required
+def insert_fitbit_data():
+	user = g.current_user
+	user.set_up_variable(fitbit_callback_code = "code")
+ 	user.set_up_variable(fitbit_access_token="access_token")
+ 	user.set_up_variable(fitbit_token_type="token_type")
+ 	user.set_up_variable(fitbit_user_id="fitbit_user_id")
+ 	user.set_up_variable(fitbit_refresh_token="fitbit_refresh_token")
+	return jsonify({"user":user.username}), 200
+
