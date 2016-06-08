@@ -114,7 +114,7 @@ def callback_fitbit_auth():
 	#collecte state and code in url
 	state_id = request.args.get("state")
 	#controle de state_id
-	pattern = re.compile('[1-9a-fA-F]{24}')
+	pattern = re.compile('[0-9a-fA-F]{24}')
 	if pattern.match(state_id) is None:
 		return "illegal state"
 	user = User.objects(id=ObjectId(state_id)).first()
