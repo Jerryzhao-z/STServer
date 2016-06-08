@@ -24,6 +24,7 @@ class Evenement(db.EmbeddedDocument):
 	Hear_Rates = db.ListField(db.EmbeddedDocumentField('HeartRate'))
 	Optional_Sleep_Data = db.EmbeddedDocumentField('SleepData')
 
+
 #TODO !
 #a definir selon le api de fitbit
 class HeartRate(db.EmbeddedDocument):
@@ -50,7 +51,6 @@ class User(db.Document):
 	email = db.EmailField()
 	password_hash = db.StringField(required = True)
 	token = db.StringField()
-	photo = db.FileField()
 	Evenements = db.ListField(db.EmbeddedDocumentField('Evenement'))
 	Personal_Parameters = db.EmbeddedDocumentField('Parameters')
 	Friends = db.ListField(db.ReferenceField('User'))
@@ -68,11 +68,8 @@ class User(db.Document):
 		#raise AttributeError('password is not a readable attribute')
 
 	def set_up_password(self, password):
-		self.password_hash = generate_password_hash(password)
-
-	def reset_password(self, password):
 		self.update(password_hash = generate_password_hash(password))
-		
+
 	def verify_password(self, password):
 		return check_password_hash(self.password_hash, password)
 
