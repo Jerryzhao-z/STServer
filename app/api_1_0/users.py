@@ -74,8 +74,6 @@ def profile_resetting():
 		user.reset_up_password(password);
 	return jsonify({'username': username, 'pw_hash': g.current_user.password_hash}), 201
 
-
-
 # logout
 #we don't need logout, because in API Restful, we don't really create logout
 
@@ -137,7 +135,8 @@ def callback_fitbit_auth():
 	fitbit_user_id = response_dictionary["user_id"]
 	user.set_up_variable(fitbit_user_id=fitbit_user_id)
 	fitbit_refresh_token = response_dictionary["refresh_token"]
-	user.set_up_variable(fitbit_refresh_token=fitbit_refresh_token)	
+	user.set_up_variable(fitbit_refresh_token=fitbit_refresh_token)
+	user.save()
 	return jsonify({'state_id': state_id, 'token_type':token_type, 'fitbit_user_id':fitbit_user_id}), 200
 	#return redirect("SleepTight://Main:8000/mypath?key=mykey")
  	#return redirect(url_for('main.index'))
@@ -183,4 +182,18 @@ def refresh_token(refresh_token):
  	refresh_token = response_dictionary["refresh_token"]
  	return jsonify({'access_token':access_token, 'refresh_token':refresh_token, 'status_code': response_curl.status_code}) 	
 
+@api.route('/test/fitbit/get')
+@auth.login_required
+def get_fitbit_data():
+	user = g.current_user
+	res = " "
+	if user.fitbit_callback_code is not None:
+		res = res+ "callback_code: "+user.fitbit_callback_code
+	if user.fitbit_access_token is not None:
+		res = res+ "fitbit_access_token: "+user.fitbit_access_token	
+	if user.fitbit_token_type is not None:
+		res = res+ "fitbit_token_type: "+user.fitbit_token_type
+	if user.fitbit_callback_code is not None:
+		res = res+ "fitbit_refresh_token: "+user.fitbit_refresh_token
+	return jsonify({'info':res, 'user':user.username})
 
