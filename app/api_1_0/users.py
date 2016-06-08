@@ -158,8 +158,16 @@ def callback_fitbit_auth():
 # # generation de token fichier: authentification.py
 
 
-@api.route('/users/fitbit/sleeps/testdata/<int:year>/<int:month>/<int:day>/<access_token>')
-def get_sleep_log_test(year, month, day, access_token):
+@api.route('/users/fitbit/sleeps/testdata/<int:year>/<int:month>/<int:day>/')
+@auth.login_required
+def get_sleep_log_test(year, month, day):
+	user = g.current_user
+	if user.fitbit_access_token is None:
+		if user.fitbit_refresh_token is None:
+			redirect(url_for('.request_fibit_auth'))
+		fitbit_access_token, fitbit_refresh_token = refresh_token(user.fitbit_refresh_token)
+		user.set_up_variable(fitbit_access_token=fitbit_access_token)
+		user.set_up_variable(fitbit_refresh_token=fitbit_refresh_token)		
 	url = "https://api.fitbit.com/1/user/4KR62B/sleep/date/{}-{}-{}.json".format(year, month, day) 
 	request_headers = {'Authorization':'Bearer '+access_token}
  	response_curl = requests.get(url, headers=request_headers)
@@ -170,7 +178,6 @@ def get_sleep_log_test(year, month, day, access_token):
 
 
 #refresh_token = ""
-@api.route('/users/fitbit/refresh/<refresh_token>')
 def refresh_token(refresh_token):
  	request_body = "grant_type=refresh_token&refresh_token="+refresh_token
  	request_headers = {'Authorization':'Basic '+base64.b64encode(client_id+":"+client_secret), 'Content-type':'application/x-www-form-urlencoded' }
@@ -180,7 +187,7 @@ def refresh_token(refresh_token):
  	response_dictionary = json.loads(response_curl.text)
  	access_token = response_dictionary["access_token"]
  	refresh_token = response_dictionary["refresh_token"]
- 	return jsonify({'access_token':access_token, 'refresh_token':refresh_token, 'status_code': response_curl.status_code}) 	
+ 	return (access_token, refresh_token)
 
 @api.route('/test/fitbit/get')
 @auth.login_required
@@ -197,14 +204,14 @@ def get_fitbit_data():
 		res = res+ "fitbit_refresh_token: "+user.fitbit_refresh_token
 	return jsonify({'info':res, 'user':user.username})
 
-@api.route('/test/fitbit/insert')
-@auth.login_required
-def insert_fitbit_data():
-	user = g.current_user
-	user.set_up_variable(fitbit_callback_code = "code")
- 	user.set_up_variable(fitbit_access_token="access_token")
- 	user.set_up_variable(fitbit_token_type="token_type")
- 	user.set_up_variable(fitbit_user_id="fitbit_user_id")
- 	user.set_up_variable(fitbit_refresh_token="fitbit_refresh_token")
-	return jsonify({"user":user.username}), 200
+# @api.route('/test/fitbit/insert')
+# @auth.login_required
+# def insert_fitbit_data():
+# 	user = g.current_user
+# 	user.set_up_variable(fitbit_callback_code = "code")
+#  	user.set_up_variable(fitbit_access_token="access_token")
+#  	user.set_up_variable(fitbit_token_type="token_type")
+#  	user.set_up_variable(fitbit_user_id="fitbit_user_id")
+#  	user.set_up_variable(fitbit_refresh_token="fitbit_refresh_token")
+# 	return jsonify({"user":user.username}), 200
 
