@@ -190,8 +190,36 @@ def refreshing_token(refresh_token):
 
 def traitement_data_sleep(user, response_dictionary):
 	sleep = response_dictionary["sleep"]
-	summary = response_dictionary["summary"]
-	return jsonify({'sleep':sleep, 'summary':summary})
+	# sleep is a list, so the next value is all wrong 9.6.2016
+	sleeptestlist = []
+	for singleSleep in sleep:
+		awakeCount = singleSleep["awakeCount"]
+		awakeningsCount = singleSleep["awakeningsCount"]
+		awakeDuration = singleSleep["awakeDuration"]
+		dateOfSleep = singleSleep["dateOfSleep"]
+		duration = singleSleep["duration"]
+		efficiency = singleSleep["efficiency"]
+		isMainSleep = singleSleep["isMainSleep"]
+		minutesAfterWakeup = singleSleep["minutesAfterWakeup"]
+		minutesAwake = singleSleep["minutesAwake"]
+		minutesAsleep = singleSleep["minutesAsleep"]
+		minutesToFallAsleep = singleSleep["minutesToFallAsleep"]
+		restlessCount = singleSleep["restlessCount"]
+		restlessDuration =singleSleep["restlessDuration"]
+		startTime = singleSleep["startTime"]
+		timeInBed = singleSleep["timeInBed"]
+
+		dateTimeStateAwake = []
+		dateTimeStateReallyAwake =[]
+		for logs in singleSleep["minuteData"]:
+			if log["value"] == "2":
+				dateTimeStateAwake.append(log["dateTime"])
+			elif log["value"] == "3":
+				dateTimeStateReallyAwake.append(log["dateTime"])
+		timelog = {"awakeCount":awakeCount, "awakeningsCount":awakeningsCount, "dateTimeStateAwake":dateTimeStateAwake, "dateTimeStateReallyAwake":dateTimeStateReallyAwake}
+		sleeptestlist.append(timelog)
+
+	return jsonify({'sleep':sleep, 'sleeptestlist':sleeptestlist})
 
 
 @api.route('/test/fitbit/get')
