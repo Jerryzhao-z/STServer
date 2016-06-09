@@ -213,9 +213,9 @@ def traitement_data_sleep(user, response_dictionary):
 		dateTimeStateReallyAwake =[]
 		for logs in singleSleep["minuteData"]:
 			if logs["value"] == "2":
-				dateTimeStateAwake.append(log["dateTime"])
+				dateTimeStateAwake.append(logs["dateTime"])
 			elif logs["value"] == "3":
-				dateTimeStateReallyAwake.append(log["dateTime"])
+				dateTimeStateReallyAwake.append(logs["dateTime"])
 		timelog = {"awakeCount":awakeCount, "awakeningsCount":awakeningsCount, "dateTimeStateAwake":dateTimeStateAwake, "dateTimeStateReallyAwake":dateTimeStateReallyAwake}
 		sleeptestlist.append(timelog)
 
