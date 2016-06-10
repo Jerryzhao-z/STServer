@@ -217,7 +217,7 @@ def traitement_data_sleep(user, response_dictionary):
 		#timelog = {"awakeCount":awakeCount, "awakeningsCount":awakeningsCount, "dateTimeStateAwake":dateTimeStateAwake, "dateTimeStateReallyAwake":dateTimeStateReallyAwake}
 		#sleeptestlist.append(timelog)
 		user.ajoute_sleep_data(awakeCount=awakeCount, awakeningsCount=awakeningsCount, \
-				awakeDuration=awakeDuration, dateOfSleep=dateOfSleep, duration=Ndurationone, \
+				awakeDuration=awakeDuration, dateOfSleep=dateOfSleep, duration=duration, \
 				efficiency=efficiency, isMainSleep=isMainSleep, minutesAfterWakeup=minutesAfterWakeup, \
 				minutesAsleep=minutesAsleep, minutesToFallAsleep=minutesToFallAsleep, restlessCount=restlessCount, \
 				restlessDuration=restlessDuration, startTime=startTime, timeInBed=timeInBed, dateTimeStateAwake=dateTimeStateAwake, \
