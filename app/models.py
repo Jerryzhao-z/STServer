@@ -47,44 +47,44 @@ class SleepData(db.EmbeddedDocument):
 	dateTimeStateAwake = db.ListField(field=db.StringField(max_length=140))
 	dateTimeStateReallyAwake =db.ListField(field=db.StringField(max_length=140))
 
-	def set_up_variable(self, awakeCount=None, awakeningsCount=None, \
-				awakeDuration=None, dateOfSleep=None, duration=None, \
-				efficiency=None, isMainSleep=None, minutesAfterWakeup=None, \
-				minutesAsleep=None, minutesToFallAsleep=None, restlessCount=None, \
-				restlessDuration=None, startTime=None, timeInBed=None, dateTimeStateAwake=None, \
-				dateTimeStateReallyAwake=None):
-		if awakeCount is not None:
-			self.update(awakeCount = awakeCount, upsert = True)
-		if awakeningsCount is not None:
-			self.update(awakeningsCount = awakeningsCount, upsert = True)
-		if awakeDuration is not None:
-			self.update(awakeDuration = awakeDuration, upsert = True)
-		if dateOfSleep is not None:
-			self.update(dateOfSleep = dateOfSleep, upsert = True)	
-		if duration is not None:
-			self.update(duration = duration, upsert = True)
-		if efficiency is not None:
-			self.update(efficiency = efficiency, upsert = True)
-		if isMainSleep is not None:
-			self.update(isMainSleep = isMainSleep, upsert = True)
-		if minutesAfterWakeup is not None:
-			self.update(minutesAfterWakeup = minutesAfterWakeup, upsert = True)
-		if minutesAsleep is not None:
-			self.update(minutesAsleep = minutesAsleep, upsert = True)	
-		if minutesToFallAsleep is not None:
-			self.update(minutesToFallAsleep = minutesToFallAsleep, upsert = True)
-		if restlessCount is not None:
-			self.update(restlessCount = restlessCount, upsert = True)
-		if restlessDuration is not None:
-			self.update(restlessDuration = restlessDuration, upsert = True)
-		if startTime is not None:
-			self.update(startTime = startTime, upsert = True)
-		if timeInBed is not None:
-			self.update(timeInBed = timeInBed, upsert = True)	
-		if dateTimeStateAwake is not None:
-			self.update(dateTimeStateAwake = dateTimeStateAwake, upsert = True)
-		if dateTimeStateReallyAwake is not None:
-			self.update(dateTimeStateReallyAwake = dateTimeStateReallyAwake, upsert = True)
+	# def set_up_variable(self, awakeCount=None, awakeningsCount=None, \
+	# 			awakeDuration=None, dateOfSleep=None, duration=None, \
+	# 			efficiency=None, isMainSleep=None, minutesAfterWakeup=None, \
+	# 			minutesAsleep=None, minutesToFallAsleep=None, restlessCount=None, \
+	# 			restlessDuration=None, startTime=None, timeInBed=None, dateTimeStateAwake=None, \
+	# 			dateTimeStateReallyAwake=None):
+	# 	if awakeCount is not None:
+	# 		self.update(awakeCount = awakeCount, upsert = True)
+	# 	if awakeningsCount is not None:
+	# 		self.update(awakeningsCount = awakeningsCount, upsert = True)
+	# 	if awakeDuration is not None:
+	# 		self.update(awakeDuration = awakeDuration, upsert = True)
+	# 	if dateOfSleep is not None:
+	# 		self.update(dateOfSleep = dateOfSleep, upsert = True)	
+	# 	if duration is not None:
+	# 		self.update(duration = duration, upsert = True)
+	# 	if efficiency is not None:
+	# 		self.update(efficiency = efficiency, upsert = True)
+	# 	if isMainSleep is not None:
+	# 		self.update(isMainSleep = isMainSleep, upsert = True)
+	# 	if minutesAfterWakeup is not None:
+	# 		self.update(minutesAfterWakeup = minutesAfterWakeup, upsert = True)
+	# 	if minutesAsleep is not None:
+	# 		self.update(minutesAsleep = minutesAsleep, upsert = True)	
+	# 	if minutesToFallAsleep is not None:
+	# 		self.update(minutesToFallAsleep = minutesToFallAsleep, upsert = True)
+	# 	if restlessCount is not None:
+	# 		self.update(restlessCount = restlessCount, upsert = True)
+	# 	if restlessDuration is not None:
+	# 		self.update(restlessDuration = restlessDuration, upsert = True)
+	# 	if startTime is not None:
+	# 		self.update(startTime = startTime, upsert = True)
+	# 	if timeInBed is not None:
+	# 		self.update(timeInBed = timeInBed, upsert = True)	
+	# 	if dateTimeStateAwake is not None:
+	# 		self.update(dateTimeStateAwake = dateTimeStateAwake, upsert = True)
+	# 	if dateTimeStateReallyAwake is not None:
+	# 		self.update(dateTimeStateReallyAwake = dateTimeStateReallyAwake, upsert = True)
 
 	def to_json(self):
 		json_sleepdata = {
@@ -213,13 +213,18 @@ class User(db.Document):
 				minutesAsleep=None, minutesToFallAsleep=None, restlessCount=None, \
 				restlessDuration=None, startTime=None, timeInBed=None, dateTimeStateAwake=None, \
 				dateTimeStateReallyAwake=None):
-		singleSleep = self.Sleep_Data.create(dateOfSleep=dateOfSleep)
-		singleSleep.set_up_variable(awakeCount=awakeCount, awakeningsCount=awakeningsCount, \
+		singleSleep = self.Sleep_Data.create(dateOfSleep=dateOfSleep, awakeCount=awakeCount, awakeningsCount=awakeningsCount, \
 				awakeDuration=awakeDuration, duration=duration, \
 				efficiency=efficiency, isMainSleep=isMainSleep, minutesAfterWakeup=minutesAfterWakeup, \
 				minutesAsleep=minutesAsleep, minutesToFallAsleep=minutesToFallAsleep, restlessCount=restlessCount, \
 				restlessDuration=restlessDuration, startTime=startTime, timeInBed=timeInBed, dateTimeStateAwake=dateTimeStateAwake, \
-				dateTimeStateReallyAwake=dateTimeStateReallyAwake);
+				dateTimeStateReallyAwake=dateTimeStateReallyAwake)
+		# singleSleep.set_up_variable(awakeCount=awakeCount, awakeningsCount=awakeningsCount, \
+		# 		awakeDuration=awakeDuration, duration=duration, \
+		# 		efficiency=efficiency, isMainSleep=isMainSleep, minutesAfterWakeup=minutesAfterWakeup, \
+		# 		minutesAsleep=minutesAsleep, minutesToFallAsleep=minutesToFallAsleep, restlessCount=restlessCount, \
+		# 		restlessDuration=restlessDuration, startTime=startTime, timeInBed=timeInBed, dateTimeStateAwake=dateTimeStateAwake, \
+		# 		dateTimeStateReallyAwake=dateTimeStateReallyAwake);
 	
 
 
