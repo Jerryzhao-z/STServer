@@ -129,13 +129,11 @@ def callback_fitbit_auth():
  	#traitemetn de reponse
 	response_dictionary = json.loads(response_curl.text)
 	access_token = response_dictionary["access_token"]
-	user.set_up_variable(fitbit_access_token=access_token)
 	token_type = response_dictionary["token_type"]
-	user.set_up_variable(fitbit_token_type=token_type)
 	fitbit_user_id = response_dictionary["user_id"]
-	user.set_up_variable(fitbit_user_id=fitbit_user_id)
 	fitbit_refresh_token = response_dictionary["refresh_token"]
-	user.set_up_variable(fitbit_refresh_token=fitbit_refresh_token)
+	user.set_up_variable(fitbit_access_token=access_token, fitbit_token_type=token_type, \
+		fitbit_user_id=fitbit_user_id, fitbit_refresh_token=fitbit_refresh_token)
 	user.save()
 	return jsonify({'state_id': state_id, 'token_type':token_type, 'fitbit_user_id':fitbit_user_id}), 200
 	#return redirect("SleepTight://Main:8000/mypath?key=mykey")
@@ -216,10 +214,15 @@ def traitement_data_sleep(user, response_dictionary):
 				dateTimeStateAwake.append(logs["dateTime"])
 			elif logs["value"] == "3":
 				dateTimeStateReallyAwake.append(logs["dateTime"])
-		timelog = {"awakeCount":awakeCount, "awakeningsCount":awakeningsCount, "dateTimeStateAwake":dateTimeStateAwake, "dateTimeStateReallyAwake":dateTimeStateReallyAwake}
-		sleeptestlist.append(timelog)
-
-	return jsonify({'sleep':sleep, 'sleeptestlist':sleeptestlist})
+		#timelog = {"awakeCount":awakeCount, "awakeningsCount":awakeningsCount, "dateTimeStateAwake":dateTimeStateAwake, "dateTimeStateReallyAwake":dateTimeStateReallyAwake}
+		#sleeptestlist.append(timelog)
+		user.ajoute_sleep_data(awakeCount=awakeCount, awakeningsCount=awakeningsCount, \
+				awakeDuration=awakeDuration, dateOfSleep=dateOfSleep, duration=Ndurationone, \
+				efficiency=efficiency, isMainSleep=isMainSleep, minutesAfterWakeup=minutesAfterWakeup, \
+				minutesAsleep=minutesAsleep, minutesToFallAsleep=minutesToFallAsleep, restlessCount=restlessCount, \
+				restlessDuration=restlessDuration, startTime=startTime, timeInBed=timeInBed, dateTimeStateAwake=dateTimeStateAwake, \
+				dateTimeStateReallyAwake=dateTimeStateReallyAwake)
+	return jsonify({'sleeptestlist':json.dumps(user.sleep_data)})
 
 
 @api.route('/test/fitbit/get')
