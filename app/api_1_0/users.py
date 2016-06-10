@@ -222,7 +222,7 @@ def traitement_data_sleep(user, response_dictionary):
 				minutesAsleep=minutesAsleep, minutesToFallAsleep=minutesToFallAsleep, restlessCount=restlessCount, \
 				restlessDuration=restlessDuration, startTime=startTime, timeInBed=timeInBed, dateTimeStateAwake=dateTimeStateAwake, \
 				dateTimeStateReallyAwake=dateTimeStateReallyAwake)
-	return jsonify({'sleeptestlist':json.dumps(user.sleep_data)})
+	return jsonify({'sleeptestlist':json.dumps(user.Sleep_Data)})
 
 
 @api.route('/test/fitbit/get')
