@@ -149,8 +149,6 @@ def request_fibit_test_auth():
 	state = str(g.current_user.id)
 	return redirect(head_url+"response_type="+response_type+"&client_id="+client_id+"&redirect_uri="+redirect_urii+"&scope="+scope+"&expires_in="+expires_in+"&state="+state)
 
-
-
 @api.route('/users/fitbit/test/callback/')
 def callback_fitbit_test_auth():
 	#collecte state and code in url
@@ -164,7 +162,8 @@ def callback_fitbit_test_auth():
  	user.set_up_variable(fitbit_callback_code = code)
 	#return jsonify({'code': user.fitbit_callback_code}), 200
 	#request
-	request_body = "client_id="+client_id+"&redirect_uri="+redirect_uri+"&grant_type=authorization_code&code="+code
+	 redirect_urii = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Ftest%2Fcallback"
+	request_body = "client_id="+client_id+"&redirect_uri="+redirect_urii+"&grant_type=authorization_code&code="+code
 	#request_body = "clientId=22zMTX&grant_type=authorization_code&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2F&code="+code
 	request_headers = {'Authorization':'Basic '+base64.b64encode(client_id+":"+client_secret), 'Content-type':'application/x-www-form-urlencoded' }
 	response_curl = requests.post("https://api.fitbit.com/oauth2/token", data=request_body, headers=request_headers)
