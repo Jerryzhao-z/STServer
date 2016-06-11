@@ -139,6 +139,50 @@ def callback_fitbit_auth():
 	#return redirect("SleepTight://Main:8000/mypath?key=mykey")
  	#return redirect(url_for('main.index'))
 
+@api.route('/users/fitbit/test/auth/')
+@auth.login_required
+def request_fibit_test_auth():
+ 	head_url = "https://www.fitbit.com/oauth2/authorize?"
+ 	response_type = "code"
+ 	#redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2F"
+ 	redirect_urii = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Ftest%2Fcallback"
+	state = str(g.current_user.id)
+	return redirect(head_url+"response_type="+response_type+"&client_id="+client_id+"&redirect_uri="+redirect_urii+"&scope="+scope+"&expires_in="+expires_in+"&state="+state)
+
+
+
+@api.route('/users/fitbit/test/callback/')
+def callback_fitbit_test_auth():
+	#collecte state and code in url
+	state_id = request.args.get("state")
+	#controle de state_id
+	pattern = re.compile('[0-9a-fA-F]{24}')
+	if pattern.match(state_id) is None:
+		return "illegal state"
+	user = User.objects(id=ObjectId(state_id)).first()
+	code = request.args.get("code")
+ 	user.set_up_variable(fitbit_callback_code = code)
+	#return jsonify({'code': user.fitbit_callback_code}), 200
+	#request
+	request_body = "client_id="+client_id+"&redirect_uri="+redirect_uri+"&grant_type=authorization_code&code="+code
+	#request_body = "clientId=22zMTX&grant_type=authorization_code&redirect_uri=http%3A%2F%2Fsleeptight2016.herokuapp.com%2F&code="+code
+	request_headers = {'Authorization':'Basic '+base64.b64encode(client_id+":"+client_secret), 'Content-type':'application/x-www-form-urlencoded' }
+	response_curl = requests.post("https://api.fitbit.com/oauth2/token", data=request_body, headers=request_headers)
+	if response_curl.status_code != 200:
+ 		return jsonify({'state_id': state_id, 'code':code, 'status_code':response_curl.status_code, 'text':response_curl.text})
+ 	#traitemetn de reponse
+	response_dictionary = json.loads(response_curl.text)
+	access_token = response_dictionary["access_token"]
+	token_type = response_dictionary["token_type"]
+	fitbit_user_id = response_dictionary["user_id"]
+	fitbit_refresh_token = response_dictionary["refresh_token"]
+	user.set_up_variable(fitbit_access_token=access_token, fitbit_token_type=token_type, \
+		fitbit_user_id=fitbit_user_id, fitbit_refresh_token=fitbit_refresh_token)
+	user.save()
+	#return jsonify({'state_id': state_id, 'token_type':token_type, 'fitbit_user_id':fitbit_user_id}), 200
+	return redirect("SleepTight://fitbit:80/mypath?key=mykey")
+ 	#return redirect(url_for('main.index'))
+
 # #def refresh_token()
 
 # #def get_access_token()
