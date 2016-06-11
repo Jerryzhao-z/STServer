@@ -136,7 +136,7 @@ def callback_fitbit_auth():
 		fitbit_user_id=fitbit_user_id, fitbit_refresh_token=fitbit_refresh_token)
 	user.save()
 	#return jsonify({'state_id': state_id, 'token_type':token_type, 'fitbit_user_id':fitbit_user_id}), 200
-	return redirect("SleepTight://Main:80/mypath?key=mykey")
+	return '<h1>You could go back to app SleepTight by RETURN KEY </h1>'
  	#return redirect(url_for('main.index'))
 
 # #def refresh_token()
