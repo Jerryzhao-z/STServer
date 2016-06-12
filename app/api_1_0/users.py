@@ -232,18 +232,21 @@ def traitement_data_sleep(user, response_dictionary):
 @auth.login_required
 def get_fitbit_data():
 	user = g.current_user
-	res = ""
+	res = "unset"
+	dict = {'user':user.username}
 	if user.fitbit_callback_code is not None:
-		res = res+ "callback_code: "+user.fitbit_callback_code
+		dict["fitbit_callback_code"] = user.fitbit_callback_code
+		res = "set"
 	if user.fitbit_access_token is not None:
-		res = res+ "fitbit_access_token: "+user.fitbit_access_token	
+		dict["fitbit_access_token"] = user.fitbit_access_token
+		res = "set"	
 	if user.fitbit_token_type is not None:
-		res = res+ "fitbit_token_type: "+user.fitbit_token_type
+		dict["fitbit_token_type"] = user.fitbit_token_type
+		res = "set"
 	if user.fitbit_refresh_token is not None:
-		res = res+ "fitbit_refresh_token: "+user.fitbit_refresh_token
-	if not res:
-		res = "unset"
-	return jsonify({'info':res, 'user':user.username})
+		dict["fitbit_refresh_token"] = user.fitbit_refresh_token
+		res = "set"
+	return jsonify(dict)
 
 # @api.route('/test/fitbit/insert')
 # @auth.login_required
