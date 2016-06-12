@@ -155,7 +155,7 @@ def callback_fitbit_auth():
 # 	#return jsonify()
 # # generation de token fichier: authentification.py
 
-
+# il faut un calcul de timeout pour les token
 @api.route('/users/fitbit/sleeps/testdata/<int:year>/<int:month>/<int:day>/')
 @auth.login_required
 def get_sleep_log_test(year, month, day):
