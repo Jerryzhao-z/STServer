@@ -9,8 +9,8 @@ except ImportError:
 	import pickle
 import requests, json, base64, re
 
-client_id = "227TCL"
-client_secret = "eac29ba018dd1e0e663b7316aa3098a1"
+client_id = "227TBL"
+client_secret = "edd290621457b81383e352f3661f2185"
 scope = "heartrate%20location%20sleep"
 expires_in = "2592000" # 1 month
 redirect_uri = "http%3A%2F%2Fsleeptight2016.herokuapp.com%2Fapi%2Fv1.0%2Fusers%2Ffitbit%2Fcallback"
